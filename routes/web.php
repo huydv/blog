@@ -1,6 +1,8 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Post;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,15 +17,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+    \Illuminate\Support\Facades\DB::listen(function($query) {
+        logger($query->sql, $query->bindings);
+    });
     return view('posts', [
-        'posts' => Post::all()
+        'posts' => Post::latest('published_at')->with('category')->get()
     ]);
 });
 
-Route::get('posts/{id}', function($id) {
-    // Find a post by its id and pass it to a view called "post"
-    $post = Post::findOrFail($id);
+Route::get('posts/{post}', function(Post $post) {
     return view('post', [
         'post' => $post
+    ]);
+});
+
+Route::get('categories/{category}', function (Category $category) {
+    return view('posts', [
+        'posts' => $category->posts
     ]);
 });
