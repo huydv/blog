@@ -25,14 +25,14 @@ Route::get('/', function () {
         'posts' => Post::latest('published_at')->get(),
         'categories' => Category::all()
     ]);
-});
+})->name('home');
 
 Route::get('posts/{post}', function(Post $post) {
     return view('post', [
         'post' => $post,
         'categories' => Category::all()
     ]);
-});
+})->name('post');
 
 Route::get('categories/{category}', function (Category $category) {
     return view('posts', [
@@ -40,7 +40,7 @@ Route::get('categories/{category}', function (Category $category) {
         'currentCategory' => $category,
         'categories' => Category::all()
     ]);
-});
+})->name('category');
 
 Route::get('authors/{author}', function (User $author) {
     return view('posts', [
